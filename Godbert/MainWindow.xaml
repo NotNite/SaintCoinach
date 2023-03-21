@@ -42,6 +42,8 @@
                 <Separator />
                 <MenuItem Header="Change game location"
                           Command="{Binding Path=GameLocationCommand}" />
+                <MenuItem Header="Load Map by Path"
+                          Command="{Binding Path=LoadMapByPathCommand}" />
             </MenuItem>
             <MenuItem Header="Settings">
                 <MenuItem Header="Show Offsets"

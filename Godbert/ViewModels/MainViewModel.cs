@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Windows.Input;
+using SaintCoinach.Graphics;
 
 namespace Godbert.ViewModels {
     using Commands;
@@ -89,12 +90,14 @@ namespace Godbert.ViewModels {
         private ICommand _NewWindowCommand;
         private ICommand _ShowOffsetsCommand;
         private ICommand _SortByOffsetsCommand;
+        private ICommand _LoadMapByPathCommand;
 
         public ICommand LanguageCommand { get { return _LanguageCommand ?? (_LanguageCommand = new Commands.DelegateCommand<SaintCoinach.Ex.Language>(OnLanguage)); } }
         public ICommand GameLocationCommand { get { return _GameLocationCommand ?? (_GameLocationCommand = new Commands.DelegateCommand(OnGameLocation)); } }
         public ICommand NewWindowCommand { get { return _NewWindowCommand ?? (_NewWindowCommand = new Commands.DelegateCommand(OnNewWindowCommand)); } }
         public ICommand ShowOffsetsCommand { get { return _ShowOffsetsCommand ?? (_ShowOffsetsCommand = new Commands.DelegateCommand(OnShowOffsetsCommand)); } }
         public ICommand SortByOffsetsCommand { get { return _SortByOffsetsCommand ?? (_SortByOffsetsCommand= new Commands.DelegateCommand(OnSortByOffsetsCommand)); } }
+        public ICommand LoadMapByPathCommand { get { return _LoadMapByPathCommand ?? (_LoadMapByPathCommand = new Commands.DelegateCommand(OnLoadMapByPathCommand)); } }
 
         private void OnLanguage(SaintCoinach.Ex.Language newLanguage) {
             Realm.GameData.ActiveLanguage = newLanguage;
@@ -150,6 +153,17 @@ namespace Godbert.ViewModels {
             OnPropertyChanged(() => SortByOffsets);
 
             DataGridChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnLoadMapByPathCommand() {
+            // VB's InputBox is a very lazy solution, but it works, I guess
+            var mapPath = Microsoft.VisualBasic.Interaction.InputBox("Enter map path");
+
+            if (string.IsNullOrWhiteSpace(mapPath))
+                return;
+
+            var t = new Territory(Realm.Packs, "Unknown", mapPath);
+            EngineHelper.OpenInNew(mapPath, (e) => new SaintCoinach.Graphics.Viewer.Content.ContentTerritory(e, t));
         }
         #endregion
     }
